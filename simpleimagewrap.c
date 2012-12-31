@@ -91,6 +91,9 @@ int main (int argc, char **argv) {
    if(chdir(argv[0]) != 0) {
       printf("failed to set working directory to %s\n", argv[0]);
    }
+   else {
+      printf("changed working directory to %s\n", argv[0]);
+   }
 
    // figure out ini name, and load it
    GetModuleFileName( NULL, szFileName, MAX_PATH );
@@ -148,9 +151,9 @@ int main (int argc, char **argv) {
    printf ("starting %s%s\n", config.app, image);
    fflush(stdout);
 
-   realloc(image, snprintf(NULL, 0, " %s", config.args) + 1);
-   sprintf(image, " %s", config.args);
-   rc = CreateProcess (config.app, NULL, NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi);
+   realloc(image, snprintf(NULL, 0, "\"%s\" %s", config.app, config.args) + 1);
+   sprintf(image, "\"%s\" %s", config.app, config.args);
+   rc = CreateProcess (config.app, image, NULL, NULL, TRUE, 0, NULL, argv[0], &si, &pi);
    if (!rc) {
       printf ("failed to launch process: %s%s; Errorcode: %lu\n", config.app, image, GetLastError ());
       exit(1);
